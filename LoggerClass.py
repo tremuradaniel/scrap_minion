@@ -16,4 +16,7 @@ class LoggerClass:
     
   def logError(self, error) -> None:
     logging.exception(str(error))
+    
+  def logInfo(self, msg) -> None:
+    logging.info(msg)
   
