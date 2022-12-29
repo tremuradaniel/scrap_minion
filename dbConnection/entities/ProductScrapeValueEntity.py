@@ -10,8 +10,8 @@ class ProductScrapeValueEntity(EntityInterface):
     self.productWebsiteId = productWebsiteId
     self.value = value
     
-  def getInsertValues(self) -> str:
-    return ",".join(map(str, [self.productWebsiteId, self.value]))
+  def getInsertValues(self) -> list:
+    return [self.productWebsiteId, self.value]
   
   def getTableName(self) -> str:
     return self.TABLE_NAME

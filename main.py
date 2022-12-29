@@ -16,14 +16,14 @@ class MainController():
   
   def execute(self):
     try:
-      self.simulateRandomAccess()
+      self._simulateRandomAccess()
       driver = self.get_driver()
-      self.saveScrape(self.getPrice(driver))
+      self._saveScrape(self._getPrice(driver))
     except BaseException as e:
       self.logger.logError(e)
     
 
-  def get_driver(self):
+  def _get_driver(self):
     service = Service(os.environ.get('PATH_TO_CHROME_DRIVER'))
 
     options = webdriver.ChromeOptions()
@@ -46,22 +46,22 @@ class MainController():
     the access will not be made each day in order to reduce the 
     suspicion of scraping 
   """
-  def simulateRandomAccess(self):
-    time.sleep(self.minutesToSecond(self.getRandomIntForMax(os.environ.get('MAX_WAITING'))))
+  def _simulateRandomAccess(self):
+    time.sleep(self._minutesToSecond(self._getRandomIntForMax(os.environ.get('MAX_WAITING'))))
     
     
-  def getRandomIntForMax(self, int):
+  def _getRandomIntForMax(self, int):
     return round(random.random() * int)
 
-  def minutesToSecond(self, minutes):
+  def _minutesToSecond(self, minutes):
     return minutes * 60
     
-  def getPrice(self, driver):
+  def _getPrice(self, driver):
     element = driver.find_element(By.XPATH, os.environ.get('WEBSITE_XPATH'))
     return element.text.split(" ")[0]
 
-  def saveScrape(self, value: float):
-    entity = ProductScrapeValueEntity(os.environ.get('PRODUCT_SCRAPE_ID'), value) # '1); DROP table test; -- '
+  def _saveScrape(self, value: float):
+    entity = ProductScrapeValueEntity(os.environ.get('PRODUCT_SCRAPE_ID'), value)
     manager = ProductScrapeValueManager(entity, self.logger)
     manager.insertProductScrapeValue()
     
