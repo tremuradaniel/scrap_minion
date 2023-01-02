@@ -4,6 +4,7 @@ import random
 from selenium import webdriver
 from dotenv import load_dotenv
 from LoggerClass import LoggerClass
+from MailerClass import MailerClass
 from dbConnection.entities.ProductScrapeValueEntity import ProductScrapeValueEntity
 from dbConnection.managers.ProductScrapeValueManager import ProductScrapeValueManager
 from selenium.webdriver.chrome.service import Service
@@ -13,12 +14,15 @@ load_dotenv()
 class MainController():
   def __init__(self) -> None:
     self.logger = LoggerClass()
+    self.mailer = MailerClass()
   
   def execute(self):
     try:
       self._simulateRandomAccess()
       driver = self.get_driver()
-      self._saveScrape(self._getPrice(driver))
+      self.value = self._getPrice(driver)
+      self._saveScrape(self.value)
+      self._notify(self.value)
     except BaseException as e:
       self.logger.logError(e)
     
@@ -64,6 +68,10 @@ class MainController():
     entity = ProductScrapeValueEntity(os.environ.get('PRODUCT_SCRAPE_ID'), value)
     manager = ProductScrapeValueManager(entity, self.logger)
     manager.insertProductScrapeValue()
+    
+  def _notify(self, value):
+    if value <= (int) (os.environ.get('ALERT_FOR_QTY')):
+      self.mailer.sendAlert("Threshold has beend passed", "The threshold for you product has been passed")
     
 
 main = MainController()

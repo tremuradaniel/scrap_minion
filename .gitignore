@@ -2,3 +2,5 @@ scrap_minion_venv
 .env
 log.txt
 __pycache__
+server.*
+.bashrc.swp
